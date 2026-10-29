@@ -525,24 +525,28 @@
   <source src="leberch-invitation-wedding-375839.mp3" type="audio/mpeg">
 </audio>
 
+
 <script>
-(function(){
+(function () {
   // ---------- nav scroll state ----------
   var nav = document.getElementById('siteNav');
-  window.addEventListener('scroll', function(){
+
+  window.addEventListener('scroll', function () {
     nav.classList.toggle('scrolled', window.scrollY > 40);
   });
 
   // ---------- mobile menu ----------
   var hamburger = document.getElementById('hamburger');
   var mobileMenu = document.getElementById('mobileMenu');
-  hamburger.addEventListener('click', function(){
+
+  hamburger.addEventListener('click', function () {
     var open = mobileMenu.classList.toggle('open');
     hamburger.classList.toggle('open', open);
-    hamburger.setAttribute('aria-expanded', open);
+    hamburger.setAttribute('aria-expanded', String(open));
   });
-  mobileMenu.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){
+
+  mobileMenu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
       mobileMenu.classList.remove('open');
       hamburger.classList.remove('open');
       hamburger.setAttribute('aria-expanded', 'false');
@@ -552,17 +556,21 @@
   // ---------- floating petals ----------
   var petalHost = document.getElementById('petals');
   var petalCount = window.innerWidth < 640 ? 7 : 12;
+
   for (var i = 0; i < petalCount; i++) {
     var p = document.createElement('div');
     p.className = 'petal';
+
     var size = 8 + Math.random() * 8;
-    p.style.left = (Math.random() * 100) + '%';
+    p.style.left = Math.random() * 100 + '%';
     p.style.width = size + 'px';
-    p.style.height = (size * 0.7) + 'px';
-    p.style.background = 'radial-gradient(circle at 30% 30%, #fff, #e3d9ef)';
+    p.style.height = size * 0.7 + 'px';
+    p.style.background =
+      'radial-gradient(circle at 30% 30%, #fff, #e3d9ef)';
     p.style.borderRadius = '60% 40% 60% 40%';
-    p.style.animationDuration = (14 + Math.random() * 10) + 's';
-    p.style.animationDelay = (Math.random() * 14) + 's';
+    p.style.animationDuration = 14 + Math.random() * 10 + 's';
+    p.style.animationDelay = Math.random() * 14 + 's';
+
     petalHost.appendChild(p);
   }
 
@@ -570,50 +578,78 @@
   var target = new Date('2026-11-01T11:00:00+05:30').getTime();
   var cdGrid = document.getElementById('cdGrid');
   var cdToday = document.getElementById('cdToday');
-  function pad(n){ return String(n).padStart(2,'0'); }
-  function tick(){
+
+  function pad(n) {
+    return String(n).padStart(2, '0');
+  }
+
+  function tick() {
     var diff = target - Date.now();
+
     if (diff <= 0) {
       cdGrid.style.display = 'none';
       cdToday.style.display = 'block';
       clearInterval(timer);
       return;
     }
-    var d = Math.floor(diff / 86400000);
-    var h = Math.floor((diff % 86400000) / 3600000);
-    var m = Math.floor((diff % 3600000) / 60000);
-    var s = Math.floor((diff % 60000) / 1000);
-    document.getElementById('cdDays').textContent = pad(d);
-    document.getElementById('cdHours').textContent = pad(h);
-    document.getElementById('cdMins').textContent = pad(m);
-    document.getElementById('cdSecs').textContent = pad(s);
-  }
-  tick();
-  var timer = setInterval(tick, 1000);
 
-  // ---------- gallery placeholders ----------
-  var photos = ['groom.jpeg', 'bride.jpeg', 'WhatsApp Image 2026-09-14 at 11.46.38 AM (1).jpeg', 'WhatsApp Image 2026-09-14 at 11.46.39 AM (1).jpeg', 'C:\Users\neeha\OneDrive\Desktop\wedding\WhatsApp Image 2026-09-14 at 11.46.39 AM.jpeg', 'gallery6.jpg'];
-photos.forEach(function(src){
-  var item = document.createElement('div');
-  item.className = 'gallery-item';
-  var img = document.createElement('img');
-  img.src = src;
-  img.alt = '';
-  item.appendChild(img);
-  galleryGrid.appendChild(item);
-});
+    document.getElementById('cdDays').textContent =
+      pad(Math.floor(diff / 86400000));
+    document.getElementById('cdHours').textContent =
+      pad(Math.floor((diff % 86400000) / 3600000));
+    document.getElementById('cdMins').textContent =
+      pad(Math.floor((diff % 3600000) / 60000));
+    document.getElementById('cdSecs').textContent =
+      pad(Math.floor((diff % 60000) / 1000));
+  }
+
+  // Initialize timer before the first tick.
+  var timer = null;
+  tick();
+  timer = setInterval(tick, 1000);
+
+  // ---------- gallery ----------
+  var galleryGrid = document.getElementById('galleryGrid');
+
+  var photos = [
+    'A.jpeg', 'B.jpeg', 'C.jpeg', 'D.jpeg',
+    'F.jpeg', 'E.jpeg', 'G.jpeg', 'H.jpeg',
+    'I.jpeg', 'J.jpeg', 'K.jpeg', 'L.jpeg',
+    'M.jpeg', 'N.jpeg', 'O.jpeg', 'P.jpeg',
+    'Q.jpeg', 'R.jpeg', 'S.jpeg', 'T.jpeg',
+    'U.jpeg', 'V.jpeg', 'W.jpeg', 'X.jpeg',
+    'Y.jpeg', 'Z.jpeg'
+  ];
+
+  photos.forEach(function (src) {
+    var item = document.createElement('div');
+    item.className = 'gallery-item';
+
+    var img = document.createElement('img');
+    img.src = src;
+    img.alt = 'Wedding gallery photo';
+    img.loading = 'lazy';
+
+    img.onerror = function () {
+      item.remove();
+    };
+
+    item.appendChild(img);
+    galleryGrid.appendChild(item);
+  });
 
   // ---------- music toggle ----------
   var musicBtn = document.getElementById('musicBtn');
   var bgm = document.getElementById('bgm');
   var playing = false;
-  musicBtn.addEventListener('click', function(){
+
+  musicBtn.addEventListener('click', function () {
     if (!playing) {
-      bgm.play().then(function(){
+      bgm.play().then(function () {
         playing = true;
         musicBtn.classList.remove('paused');
         musicBtn.setAttribute('aria-pressed', 'true');
-      }).catch(function(){
+      }).catch(function () {
         musicBtn.classList.add('paused');
       });
     } else {
@@ -624,59 +660,82 @@ photos.forEach(function(src){
     }
   });
 
-  // ---------- RSVP with persistent storage ----------
+  // ---------- RSVP: Google Sheets ----------
   var form = document.getElementById('rsvpForm');
   var statusEl = document.getElementById('rsvpStatus');
   var countEl = document.getElementById('rsvpCount');
   var submitBtn = document.getElementById('rsvpSubmit');
-  var STORAGE_KEY = 'rsvp-responses';
 
-  function refreshCount(){
-    if (!window.storage) return;
-    window.storage.get(STORAGE_KEY, true).then(function(res){
-      var list = res && res.value ? JSON.parse(res.value) : [];
-      var totalGuests = list.reduce(function(sum, e){ return sum + (parseInt(e.guests,10) || 0); }, 0);
-      if (list.length > 0) {
-        countEl.textContent = list.length + ' പേർ മറുപടി അറിയിച്ചു · ' + totalGuests + ' അതിഥികൾ';
-      }
-    }).catch(function(){ /* no entries yet */ });
-  }
-  refreshCount();
+  // IMPORTANT: Replace with your deployed Apps Script /exec URL.
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyenxSHmNoQ1TxDGUhpjYKarX-111cTSNo3LT8ITfdw3ClS3uOwamEJ9sbLWjFATGxwUw/exec';
 
-  form.addEventListener('submit', function(e){
+  // No guest counter until a read endpoint is configured.
+  countEl.textContent = '';
+
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    if (!window.storage) {
-      statusEl.textContent = 'ക്ഷമിക്കണം, ഇപ്പോൾ സേവ് ചെയ്യാൻ കഴിയുന്നില്ല.';
+
+    if (
+      !SCRIPT_URL.startsWith('https://script.google.com/') ||
+      !SCRIPT_URL.endsWith('/exec')
+    ) {
+      statusEl.textContent =
+        'Please configure the RSVP service before submitting.';
       return;
     }
+
+    var name = document.getElementById('rName').value.trim();
+    var guests = Number(
+      document.getElementById('rGuests').value
+    );
+    var message = document.getElementById('rMsg').value.trim();
+
+    if (
+      !name ||
+      !Number.isInteger(guests) ||
+      guests < 1 ||
+      guests > 100
+    ) {
+      statusEl.textContent =
+        'Please check your name and guest count.';
+      return;
+    }
+
     submitBtn.disabled = true;
     statusEl.textContent = 'അയക്കുന്നു...';
-    var entry = {
-      name: document.getElementById('rName').value.trim(),
-      guests: document.getElementById('rGuests').value,
-      message: document.getElementById('rMsg').value.trim(),
-      timestamp: new Date().toISOString()
-    };
-    window.storage.get(STORAGE_KEY, true).then(function(res){
-      var list = res && res.value ? JSON.parse(res.value) : [];
-      list.push(entry);
-      return window.storage.set(STORAGE_KEY, JSON.stringify(list), true);
-    }).catch(function(){
-      // key may not exist yet
-      return window.storage.set(STORAGE_KEY, JSON.stringify([entry]), true);
-    }).then(function(result){
-      if (!result) throw new Error('save failed');
-      statusEl.textContent = 'നന്ദി! താങ്കളുടെ മറുപടി ലഭിച്ചു.';
+
+    try {
+      var body = new URLSearchParams({
+        name: name,
+        guests: String(guests),
+        message: message
+      });
+
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: body
+      });
+
+      // A no-cors response cannot confirm that Google saved the row.
+      statusEl.textContent =
+        'അഭ്യർത്ഥന അയച്ചു. ദയവായി സ്ഥിരീകരണത്തിനായി ബന്ധപ്പെടുക.';
+
       form.reset();
-      document.getElementById('rGuests').value = 1;
-      refreshCount();
-    }).catch(function(){
-      statusEl.textContent = 'ക്ഷമിക്കണം, ഒരു പിശക് സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കൂ.';
-    }).finally(function(){
+      document.getElementById('rGuests').value = '1';
+
+    } catch (error) {
+      console.error('RSVP submission error:', error);
+
+      statusEl.textContent =
+        'ക്ഷമിക്കണം, അയയ്ക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കൂ.';
+    } finally {
       submitBtn.disabled = false;
-    });
+    }
   });
+
 })();
 </script>
+
 </body>
 </html>
